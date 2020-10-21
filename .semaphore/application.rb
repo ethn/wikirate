@@ -49,33 +49,33 @@ module Wikirate
 
     config.autoload_paths += Dir["#{root}/test"]
     config.file_buckets = {
-      s3_live_bucket: {
-        read_only: true,
-        provider: "fog/aws",
-        directory: "wikirate",
-        subdirectory: "files",
-        credentials: {
-          provider: "AWS",
-          aws_access_key_id: ENV["LIVE_BUCKET_AWS_ACCESS_KEY_ID"],
-          aws_secret_access_key: ENV["LIVE_BUCKET_AWS_SECRET_ACCESS_KEY"],
-          region: "eu-central-1"
-        },
-        attributes: { "Cache-Control" => "max-age=#{365.day.to_i}" },
-        public: true
-      },
-      s3_staging_bucket: {
-        provider: "fog/aws",
-        directory: "wikirate-staging",
-        credentials: {
-          provider: "AWS", # required
-          aws_access_key_id: ENV["STAGING_BUCKET_AWS_ACCESS_KEY_ID"],
-          aws_secret_access_key: ENV["STAGING_BUCKET_AWS_SECRET_ACCESS_KEY"],
-          region: "eu-central-1", # optional, defaults to 'us-east-1'
-        },
-        attributes: { "Cache-Control" => "max-age=#{365.day.to_i}" },
-        subdirectory: "files",
-        public: true
-      }
+      # s3_live_bucket: {
+      #   read_only: true,
+      #   provider: "fog/aws",
+      #   directory: "wikirate",
+      #   subdirectory: "files",
+      #   credentials: {
+      #     provider: "AWS",
+      #     aws_access_key_id: ENV["LIVE_BUCKET_AWS_ACCESS_KEY_ID"],
+      #     aws_secret_access_key: ENV["LIVE_BUCKET_AWS_SECRET_ACCESS_KEY"],
+      #     region: "eu-central-1"
+      #   },
+      #   attributes: { "Cache-Control" => "max-age=#{365.day.to_i}" },
+      #   public: true
+      # },
+      # s3_staging_bucket: {
+      #   provider: "fog/aws",
+      #   directory: "wikirate-staging",
+      #   credentials: {
+      #     provider: "AWS", # required
+      #     aws_access_key_id: ENV["STAGING_BUCKET_AWS_ACCESS_KEY_ID"],
+      #     aws_secret_access_key: ENV["STAGING_BUCKET_AWS_SECRET_ACCESS_KEY"],
+      #     region: "eu-central-1", # optional, defaults to 'us-east-1'
+      #   },
+      #   attributes: { "Cache-Control" => "max-age=#{365.day.to_i}" },
+      #   subdirectory: "files",
+      #   public: true
+      # }
     }
   end
 end

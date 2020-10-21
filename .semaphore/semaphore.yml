@@ -8,12 +8,13 @@ global_job_config:
   env_vars:
     - name: BUNDLE_PATH
       value: ~/wikirate/vendor/bundle/
-    - name: COVERAGE
-      value: 'false'
     - name: DECKO_REPO_PATH
       value: ~/wikirate
     - name: RAILS_ENV
       value: test
+  secrets:
+    - name: s3-credentials
+    - name: code-climate
   prologue:
     commands:
       - checkout
@@ -35,6 +36,9 @@ blocks:
           - cache store gems-baseline vendor/bundle
           - cache store bundle-config .bundle
 
+          - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          - chmod +x ./cc-test-reporter
+
           - be rake db:create
           - be rake wikirate:test:seed
 
@@ -45,6 +49,11 @@ blocks:
         - name: RSpec
           commands:
             - be rspec
+      epilogue:
+        commands:
+          - ./cc-test-reporter format-coverage --output "coverage/codeclimate.$SEMAPHORE_JOB_ID.json" -t simplecov
+          - aws s3 cp "coverage/codeclimate.$SEMAPHORE_JOB_ID.json" "s3://deckodev-test/$SEMAPHORE_PROJECT_NAME/$SEMAPHORE_GIT_BRANCH/coverage/$SEMAPHORE_WORKFLOW_ID/"
+
   - name: Integration Tests
     task:
       prologue:
@@ -53,6 +62,9 @@ blocks:
           - cache restore gems-$(checksum Gemfile.lock)
           - be rake db:create
           - be rake wikirate:test:seed
+
+          - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          - chmod +x ./cc-test-reporter
 
       jobs:
         - name: Cucumber
@@ -64,3 +76,19 @@ blocks:
             - nvm use 12.18.2
             - yarn install
             - yarn run cypress run --record --key ffd8ff95-9033-4fd3-bcee-fc13cd67b3b7
+
+      epilogue:
+        commands:
+          - ./cc-test-reporter format-coverage --output "coverage/codeclimate.$SEMAPHORE_JOB_ID.json" -t simplecov
+          - aws s3 cp "coverage/codeclimate.$SEMAPHORE_JOB_ID.json" "s3://deckodev-test/$SEMAPHORE_PROJECT_NAME/$SEMAPHORE_GIT_BRANCH/coverage/$SEMAPHORE_WORKFLOW_ID/"
+
+  - name: Coverage Report
+    task:
+      jobs:
+        - name: CodeClimate Coverage
+          commands:
+            - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            - chmod +x ./cc-test-reporter
+            - aws s3 sync "s3://deckodev-test/$SEMAPHORE_PROJECT_NAME/$SEMAPHORE_GIT_BRANCH/coverage/$SEMAPHORE_WORKFLOW_ID/" coverage/
+            - ./cc-test-reporter sum-coverage --output - --parts $(ls -1 coverage/ | wc -l) coverage/codeclimate.*.json > coverage/codeclimate.json
+            - ./cc-test-reporter upload-coverage
