@@ -1,11 +1,25 @@
 RSpec.describe Card::Set::Type::WikirateCompany do
   let(:company_card) { Card["Death Star"] }
 
+  def card_subject
+    company_card
+  end
+
   it "shows the link for view \"missing\"" do
     html = render_card :unknown, type_id: Card::WikirateCompanyID,
                                  name: "non-existing-card"
     expect(html).to eq(render_card(:link, type_id: Card::WikirateCompanyID,
                                           name: "non-existing-card"))
+  end
+
+  specify "view thumbnail_image" do
+    expect_view(:thumbnail).to have_tag("div.image-box") do
+      with_tag "div.image-box.small" do
+        with_tag "a.known-card" do
+          with_tag "i.fa-building"
+        end
+      end
+    end
   end
 
   describe "creating company with post request", type: :controller do
@@ -29,7 +43,7 @@ RSpec.describe Card::Set::Type::WikirateCompany do
       expect_card("new company")
         .to exist
         .and have_a_field(:open_corporates).with_content("C0806592")
-        .and have_a_field(:headquarters).with_content("[[California (United States)]]")
+        .and have_a_field(:headquarters).with_content("California (United States)")
     end
   end
 

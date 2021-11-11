@@ -58,10 +58,20 @@ namespace :wikirate do
 
         ensure_env :test, task do
           Rake::Task["wikirate:test:load_dump"].invoke(migrated_dump_path)
+          Rake::Task["card:merge"].invoke
           Card # I don't fully understand why this is necessary, but without it there
           # is an autoloading problem.
 
           Rake::Task["wikirate:test:seed:add_wikirate_test_data"].invoke
+          Rake::Task["wikirate:test:seed:update_assets"].invoke
+        end
+      end
+
+      desc "add update_assets"
+      task update_assets: :environment do |task|
+        Cardio.config.delaying = false
+
+        ensure_env :test, task do
           Rake::Task["card:mod:install"].execute
           ENV["SEED_MACHINE_OUTPUT_TO"] = "test"
           Rake::Task["card:asset:refresh!"].execute

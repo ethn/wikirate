@@ -1,5 +1,5 @@
 # cache # of companies in this group
-include_set Abstract::PointerCachedCount
+include_set Abstract::ListCachedCount
 include_set Abstract::IdPointer
 
 delegate :specification_card, to: :left
@@ -15,19 +15,9 @@ end
 
 def constraint_clauses
   constraints.map do |constraint|
-    "select company_id from answers " \
-    "where #{constraint_conditions constraint} " \
-    "and answers.company_id = cards.id"
+    "SELECT company_id FROM answers " \
+    "WHERE #{constraint.conditions} AND answers.company_id = cards.id"
   end
-end
-
-def constraint_conditions constraint
-  AnswerQuery.new(
-    metric_id: constraint.metric.id,
-    year: constraint.year,
-    value: constraint.value,
-    related_company_group: constraint.group
-  ).lookup_conditions
 end
 
 def item_names_from_spec

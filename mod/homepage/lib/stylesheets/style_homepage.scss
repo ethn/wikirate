@@ -1,7 +1,7 @@
 
 
 .home-layout {
-  background: url({{topics collage|source; size:original}});
+  background: url("{{topics collage|source; size:original}}");
   .bar {
     background: #ffffff
   }
@@ -72,7 +72,6 @@
 /*----------- Top banner ---------*/
 .wikirate-logo-title {
   font-weight: normal;
-  font-family: Droid Sans;
   font-size: 3.5rem;
   color: $white;
 }
@@ -449,4 +448,63 @@ footer.homepage-footer {
   position: absolute;
   right: 5%;
   bottom: -1rem;
+}
+
+.showcase-banner {
+  h3 {
+    color: $new-purple;
+  }
+
+  top: -120px;
+  border-radius: 8px;
+  box-shadow: $small-shadow;
+
+  > .row {
+    margin: 0 3rem;
+  }
+
+  .showcase-btn-col {
+    @include media-breakpoint-down(md) {
+      text-align: left;
+      margin-top: 2em;
+    }
+    text-align: center
+  }
+}
+
+.btn-purple {
+  background: $new-purple;
+  color: white;
+  box-shadow: $primary-shadow;
+
+  padding: 0.7rem 2rem;
+  min-width: 165px;
+  font-size: 1rem;
+  border-radius: 0.3rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  &:hover {
+    background: $new-dark-purple;
+    color: white;
+  }
+  &:active {
+    box-shadow: $large-shadow;
+    color: $new-purple;
+    background: $new-button-gray;
+  }
+  &:focus {
+    background: $new-button-gray;
+    color: #2E34B7;
+    border: 3px solid #2E34B7;
+  }
+}
+
+#home-content-view {
+  .lead {
+    font-weight: 400;
+  }
+  h1 {
+    font-size: 2rem;
+  }
 }

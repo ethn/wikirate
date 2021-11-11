@@ -83,7 +83,11 @@ $box_stripe_color: $gray-700;
   }
 }
 
+
 .bar-left a {
+  &, .bar-left {
+    font-weight: 600;
+  }
   color: inherit;
 }
 
@@ -94,9 +98,11 @@ $box_stripe_color: $gray-700;
 }
 
 .box {
-  border-top: 3px solid $border-color;
+  border-top: 3px solid $gray-500;
+  box-shadow: $small-shadow;
   &:hover {
-    @include box-shadow(0,9px,20px,rgba(0,0,0,0.16));
+    box-shadow: $large-shadow;
+    cursor: pointer;
   }
 }
 
@@ -224,7 +230,7 @@ a.box-item {
   }
 }
 
-.TYPE-topic, .TYPE-company {
+.TYPE-topic, .TYPE-company, .TYPE-company_group {
   &.box .box-middle {
     text-align: center;
   }
